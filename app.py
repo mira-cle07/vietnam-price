@@ -80,19 +80,5 @@ if n > 0:
             unsafe_allow_html=True
         )
 
-    # 4. 計算含二補預估金額 (1筆 = 總計+110；n筆 = 總計+110+10*(n-1))
-    shipping_fee = 110 if n == 1 else 110 + 10 * (n - 1)
-    final_total = total_individual_quote + shipping_fee
-   
-    # 【小字顯示】改用小一號的字體呈現二補預估金額，不喧賓奪主
-    st.write(
-        f"<p style='font-size: 14px; color: #7F8C8D; padding: 10px; border-left: 5px solid #BDC3C7; border-radius: 4px;'>"
-        f"🚚 <strong>含二補「預估」金額：NT$ {final_total:.2f} 元</strong><br>"
-        f"<span style='font-size: 12px; color: #7F8C8D;'>(單件基本費「預估」110 元"
-        f"{f' + 多件 {20 * (n-1)} 元' if n > 1 else ''})</span>"
-        f"</p>", 
-        unsafe_allow_html=True
-    )
-    st.error("▴此運費為AI概略估計，僅供參考，實際以商品實重為準▴")
 else:
     st.info("請於上方輸入原價，系統將自動為您報價🤑")
