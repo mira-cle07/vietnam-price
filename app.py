@@ -35,7 +35,7 @@ count = 1
 while True:
     if count == 1 or (count > 1 and prices[-1] > 0):
         val = st.number_input(
-            f"ヽ(✿ﾟ▽ﾟ)ノ輸入第 {count} 筆原價：(無後續請填0)", 
+            f"ヽ(✿ﾟ▽ﾟ)ノ輸入第 {count} 筆原價：", 
             min_value=0, 
             step=1000, 
             value=0,
@@ -83,4 +83,4 @@ if n > 0:
         )
 
 else:
-    st.info("請於上方輸入原價，系統將自動為您報價 (❁´◡`❁)")
+    st.info("請於上方輸入原價(❁´◡`❁)系統將自動為您報價")
