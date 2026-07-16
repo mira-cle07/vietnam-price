@@ -2,8 +2,8 @@ import streamlit as st
 import requests
 
 # 設定網頁標題與圖示
-st.set_page_config(page_title="估價報價系統", page_icon="✿", layout="centered")
-st.title("✿ ViệtNam揪團估價機 ✿")
+st.set_page_config(page_title="✿tellmetheprice", page_icon="✿", layout="centered")
+st.title("✿ViệtNam揪團估價機")
 
 # 1. 自動抓取當天時下匯率
 @st.cache_data(ttl=3600)  # 暫存 1 小時，避免重複頻繁讀取
@@ -56,24 +56,26 @@ st.divider()
 
 # 3. 計算與匯出報價金額
 if n > 0:
-    st.subheader("📋試算結果報價單")
+    st.subheader("📋 試算結果報價單")
     
     total_individual_quote = 0.0
     
     # 逐筆計算個別報價
     for i, original_price in enumerate(valid_prices, 1):
-        # 公式：原價 * 時下匯率 * 1.15
+        # 公式：計算後四捨五入成整數
         individual_quote = int(original_price * exchange_rate * 1.15 + 0.5)
         total_individual_quote += individual_quote
         
-        # 【重點標記】放大加粗個別報價金額
-    st.write(f"🪙 第 {i} 筆商品（原價 {original_price:,} VND）：")
-    st.write(
-	f"小計(不含運)：NT$ {individual_quote:.2f} 元</span>", 
-            unsafe_allow_html=True
-	)
+        # 👇 【關鍵修正】把兩行程式碼縮進來（對齊這一層），並全部改用純 st.write 呈現
+        # 第一行：顯示商品編號與原價
+        st.write(f"🪙 第 {i} 筆商品（原價 {original_price:,} VND）：")
+        
+        # 第二行：保留換算價格，並用 ** 符號將文字加粗
+        st.write(f"➡️ **📌 小計(不含運)：NT$ {individual_quote:,} 元**")
+        
+        # 每一筆印完後留個空行，讓排版看起來比較寬鬆
+        st.write("") 
 
-    st.write("") # 留空行
     st.markdown(
             f"<br><span style='font-size: 20px; font-weight: bold; color: #000000; background-color: #FCCFDE; padding: 2px 8px; border-radius: 4px;'>"
             f"💰 報價金額總計：**{total_individual_quote:.2f}** 元", 
