@@ -68,10 +68,10 @@ if n > 0:
         
         # 👇 【關鍵修正】把兩行程式碼縮進來（對齊這一層），並全部改用純 st.write 呈現
         # 第一行：顯示商品編號與原價
-        st.write(f"🪙 第 {i} 筆商品（原價 {original_price:,} VND）：")
+        st.write(f"🪙第 {i} 筆商品（ {original_price:,} VND）：")
         
         # 第二行：保留換算價格，並用 ** 符號將文字加粗
-        st.write(f"➡️ **📌 小計(不含運)：NT$ {individual_quote:,} 元**")
+        st.write(f"**小計(不含運)：NT$ {individual_quote:,} **")
         
         # 每一筆印完後留個空行，讓排版看起來比較寬鬆
         st.write("") 
@@ -83,4 +83,4 @@ if n > 0:
         )
 
 else:
-    st.info("請於上方輸入原價，系統將自動為您報價🤑")
+    st.info("請於上方輸入原價，系統將自動為您報價 (❁´◡`❁)")
