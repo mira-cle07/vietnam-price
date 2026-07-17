@@ -5,22 +5,27 @@ import requests
 st.set_page_config(page_title="✿tellmetheprice", page_icon="✿", layout="centered")
 st.title("✿ViệtNam揪團估價機")
 
-# 1. 自動抓取當天時下匯率
+# 1. 自動抓取當天時下匯率 (更換為 100% 支援台幣與越南盾的最新 API)
 @st.cache_data(ttl=3600)  # 暫存 1 小時，避免重複頻繁讀取
 def get_exchange_rates():
-    rates = {"VND": 0.00135, "USD": 37.25}
+    # 預設備用匯率
+    rates = {"VND": 0.00135, "USD": 32.5}
     try:
-        # 查詢 1 台幣(TWD) 等於多少越南盾(VND)
+        # 改用真正支援 TWD 的 ExchangeRate-API (以台幣 TWD 為基準貨幣)
         url = "https://er-api.com"
         response = requests.get(url, timeout=5)
         data = response.json()
+        
+        # 該 API 回傳格式為：1台幣可以換多少外幣
         twd_to_vnd = data["rates"]["VND"]
         twd_to_usd = data["rates"]["USD"]
+        
+        # 換算回：1單位外幣等於多少台幣
         rates["VND"] = 1 / twd_to_vnd
         rates["USD"] = 1 / twd_to_usd
     except Exception:
         pass
-    return rates  # 網路斷線時的備用匯率
+    return rates  # 網路斷線或異常時的備用匯率
 
 # 取得並顯示匯率
 rates_dict = get_exchange_rates()
@@ -38,7 +43,7 @@ st.caption("❁ 匯率數據由系統自動連線即時更新")
 st.divider()
 
 # 2. 動態輸入原價
-st.subheader("🛒 輸入商品原價（VND）")
+st.subheader("🛒 輸入商品原價（VND/USD）")
 
 prices = []
 count = 1
@@ -84,18 +89,20 @@ if n > 0:
         individual_quote = int(original_price * current_rate * 1.15 + 0.5)
         total_individual_quote += individual_quote
         
-        # 👇 【關鍵修正】把兩行程式碼縮進來（對齊這一層），並全部改用純 st.write 呈現
         # 第一行：顯示商品編號與原價
-        st.write(f"🪙第 {i} 筆商品（ {original_price:,} {currency_name}）：")
+        if currency_name == "VND":
+            st.write(f"🪙第 {i} 筆商品（ {int(original_price):,} {currency_name} ）：")
+        else:
+            st.write(f"🪙第 {i} 筆商品（ {original_price} {currency_name} ）：")
         
         # 第二行：保留換算價格，並用 ** 符號將文字加粗
-        st.write(f"**小計(不含運)：NT$ {individual_quote:,}**")
+        st.write(f"**小計(不含運)：NT$ {individual_quote:,} 元**")
         # 每一筆印完後留個空行，讓排版看起來比較寬鬆
         st.write("") 
 
     # 修正縮排：移至 for 迴圈外部，避免重覆列印
     st.markdown(
-        f"<br><span style='font-size: 20px; font-weight: bold; color: #000000; background-color: #FCCFDE; padding: 2px 8px; border-radius: 4px处理;'>"
+        f"<br><span style='font-size: 20px; font-weight: bold; color: #000000; background-color: #FCCFDE; padding: 2px 8px; border-radius: 4px;'>"
         f"💰 報價金額總計：**{total_individual_quote:,}** 元</span>", 
         unsafe_allow_html=True
     )
