@@ -23,7 +23,7 @@ def get_vnd_to_twd_rate():
         return rates  # 網路斷線時的備用匯率
 
 # 取得並顯示匯率
-exchange_rate = get_vnd_to_twd_rate()
+rates_dict = get_exchange_rates()
 vnd_rate = rates_dict["VND"]
 usd_rate = rates_dict["USD"]
 
