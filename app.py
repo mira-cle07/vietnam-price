@@ -73,7 +73,7 @@ if n > 0:
     
     # 逐筆計算個別報價
     for i, original_price in enumerate(valid_prices, 1):
-        if original_price<1000:
+        if original_price < 1000:
             currency_name = "USD"
             current_rate = usd_rate
         else:
@@ -86,18 +86,19 @@ if n > 0:
         
         # 👇 【關鍵修正】把兩行程式碼縮進來（對齊這一層），並全部改用純 st.write 呈現
         # 第一行：顯示商品編號與原價
-        st.write(f"🪙第 {i} 筆商品（ {original_price:,} {currency_names}）：")
+        st.write(f"🪙第 {i} 筆商品（ {original_price:,} {currency_name}）：")
         
         # 第二行：保留換算價格，並用 ** 符號將文字加粗
         st.write(f"**小計(不含運)：NT$ {individual_quote:,}**")
         # 每一筆印完後留個空行，讓排版看起來比較寬鬆
         st.write("") 
 
+    # 修正縮排：移至 for 迴圈外部，避免重覆列印
     st.markdown(
-            f"<br><span style='font-size: 20px; font-weight: bold; color: #000000; background-color: #FCCFDE; padding: 2px 8px; border-radius: 4px;'>"
-            f"💰 報價金額總計：**{total_individual_quote:,}** 元", 
-            unsafe_allow_html=True
-        )
+        f"<br><span style='font-size: 20px; font-weight: bold; color: #000000; background-color: #FCCFDE; padding: 2px 8px; border-radius: 4px处理;'>"
+        f"💰 報價金額總計：**{total_individual_quote:,}** 元</span>", 
+        unsafe_allow_html=True
+    )
 
 else:
     st.info("請於上方輸入原價(❁´◡`❁)系統將自動為您報價")
