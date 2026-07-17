@@ -5,13 +5,13 @@ import requests
 st.set_page_config(page_title="✿tellmetheprice", page_icon="✿", layout="centered")
 st.title("✿ViệtNam揪團估價機")
 
-# 1. 自動抓取當天時下匯率 (更換為 100% 支援台幣與越南盾的最新 API)
+# 1. 自動抓取當天時下匯率
 @st.cache_data(ttl=3600)  # 暫存 1 小時，避免重複頻繁讀取
 def get_exchange_rates():
     # 預設備用匯率
     rates = {"VND": 0.00135, "USD": 32.5}
     try:
-        # 改用真正支援 TWD 的 ExchangeRate-API (以台幣 TWD 為基準貨幣)
+        # 使用 ExchangeRate-API (以台幣 TWD 為基準貨幣)
         url = "https://er-api.com"
         response = requests.get(url, timeout=5)
         data = response.json()
@@ -49,23 +49,26 @@ prices = []
 count = 1
 
 while True:
-    if count == 1 or (count > 1 and prices[-1] > 0):
+    # 判斷是否需要長出下一個欄位（第一個欄位直接出，後續欄位要前一筆大於 0）
+    if count == 1 or (count > 1 and prices[-1] is not None and prices[-1] > 0):
         val = st.number_input(
             f"ヽ(✿ﾟ▽ﾟ)ノ輸入第 {count} 筆原價：", 
             min_value=0.0, 
             step=1.0, 
-            value=0.0,
+            value=None, # 👇 【關鍵修正】將原本的 0.0 改成 None，輸入框就會維持完全清空
             key=f"price_{count}"
         )
         prices.append(val)
         
-        if val == 0:
+        # 如果使用者把欄位清空（None）或是手動填入 0，就代表後面沒有新欄位，跳出迴圈
+        if val is None or val == 0:
             break
         count += 1
     else:
         break
 
-valid_prices = [p for p in prices if p > 0]
+# 僅過濾出真正有輸入大於 0 數值的有效金額
+valid_prices = [p for p in prices if p is not None and p > 0]
 n = len(valid_prices)
 
 st.divider()
@@ -100,7 +103,7 @@ if n > 0:
         # 每一筆印完後留個空行，讓排版看起來比較寬鬆
         st.write("") 
 
-    # 修正縮排：移至 for 迴圈外部，避免重覆列印
+    # 顯示總計
     st.markdown(
         f"<br><span style='font-size: 20px; font-weight: bold; color: #000000; background-color: #FCCFDE; padding: 2px 8px; border-radius: 4px;'>"
         f"💰 報價金額總計：**{total_individual_quote:,}** 元</span>", 
