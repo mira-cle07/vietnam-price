@@ -7,7 +7,7 @@ st.title("✿ViệtNam揪團估價機")
 
 # 1. 自動抓取當天時下匯率
 @st.cache_data(ttl=3600)  # 暫存 1 小時，避免重複頻繁讀取
-def get_vnd_to_twd_rate():
+def get_exchange_rates():
     rates = {"VND": 0.00135, "USD": 37.25}
     try:
         # 查詢 1 台幣(TWD) 等於多少越南盾(VND)
@@ -20,7 +20,7 @@ def get_vnd_to_twd_rate():
         rates["USD"] = 1 / twd_to_usd
     except Exception:
         pass
-        return rates  # 網路斷線時的備用匯率
+    return rates  # 網路斷線時的備用匯率
 
 # 取得並顯示匯率
 rates_dict = get_exchange_rates()
@@ -29,9 +29,9 @@ usd_rate = rates_dict["USD"]
 
 col1, col2 = st.columns(2)
 with col1:
-    st.metric(label="📈今日代購費率 (VND → TWD)", value=f"{exchange_rate:.6f}")
+    st.metric(label="📈今日代購費率 (VND → TWD)", value=f"{vnd_rate:.6f}")
 with col2:
-    st.metric(label="📈今日代購費率 (USD → TWD)", value=f"{exchange_rate:.6f}")
+    st.metric(label="📈今日代購費率 (USD → TWD)", value=f"{usd_rate:.6f}")
 st.caption("❁ 時下匯率+12%服務+3%跨國手續")
 st.caption("❁ 匯率數據由系統自動連線即時更新")
 
@@ -81,7 +81,7 @@ if n > 0:
             current_rate = vnd_rate
             
         # 公式：計算後四捨五入成整數
-        individual_quote = int(original_price * exchange_rate * 1.15 + 0.5)
+        individual_quote = int(original_price * current_rate * 1.15 + 0.5)
         total_individual_quote += individual_quote
         
         # 👇 【關鍵修正】把兩行程式碼縮進來（對齊這一層），並全部改用純 st.write 呈現
@@ -89,14 +89,13 @@ if n > 0:
         st.write(f"🪙第 {i} 筆商品（ {original_price:,} {currency_names}）：")
         
         # 第二行：保留換算價格，並用 ** 符號將文字加粗
-        st.write(f"**小計(不含運)：NT$ {individual_quote:,}{currency_names} **")
-        
+        st.write(f"**小計(不含運)：NT$ {individual_quote:,}**")
         # 每一筆印完後留個空行，讓排版看起來比較寬鬆
         st.write("") 
 
     st.markdown(
             f"<br><span style='font-size: 20px; font-weight: bold; color: #000000; background-color: #FCCFDE; padding: 2px 8px; border-radius: 4px;'>"
-            f"💰 報價金額總計：**{total_individual_quote:.2f}** 元", 
+            f"💰 報價金額總計：**{total_individual_quote:,}** 元", 
             unsafe_allow_html=True
         )
 
