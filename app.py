@@ -99,14 +99,14 @@ if n > 0:
             st.write(f"🪙第 {i} 筆商品（ {original_price} {currency_name} ）：")
         
         # 第二行：保留換算價格，並用 ** 符號將文字加粗
-        st.write(f"**小計(不含運)：NT$ {individual_quote:,} 元**")
+        st.write(f"**小計：NT$ {individual_quote:,} 元**")
         # 每一筆印完後留個空行，讓排版看起來比較寬鬆
         st.write("") 
 
     # 顯示總計
     st.markdown(
         f"<br><span style='font-size: 20px; font-weight: bold; color: #000000; background-color: #FCCFDE; padding: 2px 8px; border-radius: 4px;'>"
-        f"💰 報價金額總計：**{total_individual_quote:,}** 元</span>", 
+        f"💰 以上總計(不含運)：**{total_individual_quote:,}** 元</span>", 
         unsafe_allow_html=True
     )
 
