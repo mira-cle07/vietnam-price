@@ -11,7 +11,7 @@ def get_exchange_rates():
     rates = {"VND": 0.00135, "USD": 37.25}
     try:
         # 查詢 1 台幣(TWD) 等於多少越南盾(VND)
-        url = "https://frankfurter.dev"
+        url = "https://er-api.com"
         response = requests.get(url, timeout=5)
         data = response.json()
         twd_to_vnd = data["rates"]["VND"]
